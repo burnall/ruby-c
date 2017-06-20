@@ -209,7 +209,6 @@ class Board
   # to store the piece on the board itself.  Then calls remove_filled.
   def store_current
     locations = @current_block.current_rotation
-    puts 'locations', locations.inspect
     displacement = @current_block.position
     (0..3).each{|index|
       current = locations[index];

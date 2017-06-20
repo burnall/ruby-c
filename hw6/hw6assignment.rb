@@ -7,21 +7,30 @@ class MyPiece < Piece
 
   # class array holding all the pieces and their rotations
   All_My_Pieces = [
-    #  **
-    #  ***
+    # Shape:
+    # **
+    # ***
     rotations([[-1, 0], [0, 0], [1, 0], [-1, 1], [0, 1]]),
 
+    # Shape:
     # *****
     [[[0, 0], [-1, 0], [1, 0], [-2, 0], [2, 0]],
     [[0, 0], [0, 1], [0, 2], [0, -2], [0, -1]]],
 
+    # Shape:
     # *
     # **
     rotations([[0, 0], [1, 0], [0, 1]])
   ].concat(All_Pieces)
 
+  Cheat_Piece = [[[0, 0]]]
+
   def self.next_piece (board)
     MyPiece.new(All_My_Pieces.sample, board)
+  end
+
+  def self.next_cheat_piece (board)
+    MyPiece.new(Cheat_Piece, board)
   end
 
 end
@@ -34,10 +43,16 @@ class MyBoard < Board
     @score = 0
     @game = game
     @delay = 500
+    @going_to_cheat = false
   end
 
   def next_piece
-    @current_block = MyPiece.next_piece(self)
+    if @going_to_cheat
+      @current_block = MyPiece.next_cheat_piece(self)
+    else
+      @current_block = MyPiece.next_piece(self)
+    end
+    @going_to_cheat = false
     @current_pos = nil
   end
 
@@ -60,7 +75,13 @@ class MyBoard < Board
     @delay = [@delay - 2, 80].max
   end
 
-
+  def cheat
+    if @score >= 100 && !@going_to_cheat
+      @going_to_cheat = true
+      @score -= 100
+      @game.update_score
+    end
+  end
 end
 
 class MyTetris < Tetris
@@ -76,6 +97,7 @@ class MyTetris < Tetris
   def key_bindings
     super
     @root.bind('u', proc {@board.flip})
+    @root.bind('c', proc {@board.cheat})
   end
 end
 
