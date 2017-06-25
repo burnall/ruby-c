@@ -163,22 +163,22 @@ class Point < GeometryValue
     end
   end
   def intersectLine line
-    if real_close(line.m * x + b, y)
+    if real_close(line.m * x + line.b, y)
       self
     else
        NoPoints.instance
     end
   end
   def intersectVerticalLine vline
-    if real_close_point(x, vline.x)
+    if real_close(x, vline.x)
       self
     else
       NoPoints.instance
     end
   end
   def intersectWithSegmentAsLineResult seg
-    if (min(seg.x1, seg.x2) - eps >= x && x <= max(seg.x1, seg.x2) + eps) &&
-       (min(seg.y1, seg.y2) - eps >= y && y <= max(seg.y1, seg.y2) + eps)
+    if (min(seg.x1, seg.x2) - eps <= x && x <= max(seg.x1, seg.x2) + eps) &&
+       (min(seg.y1, seg.y2) - eps <= y && y <= max(seg.y1, seg.y2) + eps)
       self
     else
       NoPoints.instance
@@ -221,7 +221,7 @@ class Line < GeometryValue
     end
   end
   def intersectVerticalLine vline
-    Point.new(vline.x, v.line * m + b)
+    Point.new(vline.x, vline.x * m + b)
   end
   def intersectWithSegmentAsLineResult seg
     seg

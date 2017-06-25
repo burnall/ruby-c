@@ -210,7 +210,7 @@ fun preprocess_prog e =
             if (real_close_point (x1, y1) (x2, y2))
             then Point (x1, y1)
             else if real_close(x1, x2)
-                 then if y1 > y2
+                 then if y1 <= y2
                       then LineSegment(x1, y1, x2, y2)
                       else LineSegment(x2, y2, x1, y1)
                  else if x1 < x2
@@ -221,6 +221,7 @@ fun preprocess_prog e =
             LineSegment ps => f ps
           | Let(s, e1, e2) => Let(s, preprocess_prog(e1), preprocess_prog(e2))
           | Intersect(e1, e2) => Intersect(preprocess_prog(e1), preprocess_prog(e2))
+          | Shift(dx, dy, e1)  => Shift(dx, dy, preprocess_prog(e1)) 
           | _ => e
 
     end
